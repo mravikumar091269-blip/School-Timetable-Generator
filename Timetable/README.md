@@ -30,7 +30,7 @@ A web-based Timetable Generator built using  **HTML**, **CSS**, and **JavaScript
 
 ## 🎥 Demo Video
 
-[Watch the Demo Video](demo%20video/Timetable%20demo.mp4)
+[Watch the Demo Video](demo%20video/Timetable-demo.mp4)
 
 ## 👩‍💻 Author
 
