@@ -18,12 +18,12 @@ A web-based Timetable Generator built using  **HTML**, **CSS**, and **JavaScript
 
 <table>
   <tr>
-    <td><img src="screenshots/1.png" width="350"></td>
-    <td><img src="screenshots/2.png" width="350"></td>
+    <td><img src="screenshots/1.PNG" width="350"></td>
+    <td><img src="screenshots/2.PNG" width="350"></td>
   </tr>
   <tr>
-    <td><img src="screenshots/3.png" width="350"></td>
-    <td><img src="screenshots/4.png" width="350"></td>
+    <td><img src="screenshots/3.PNG" width="350"></td>
+    <td><img src="screenshots/4.PNG" width="350"></td>
   </tr>
 </table>
 
