@@ -1,0 +1,966 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Generated Timetable</title>
+
+<style>
+body{
+    min-height:100vh;
+    padding:40px;
+    overflow-x:hidden;
+    font-family:Arial,sans-serif;
+
+    background:
+    radial-gradient(circle at top left,#60a5fa 0%,transparent 35%),
+    radial-gradient(circle at bottom right,#7c3aed 0%,transparent 35%),
+    linear-gradient(
+        135deg,
+        #0f172a,
+        #1e293b,
+        #312e81
+    );
+}
+
+.bg-circle{
+    position:fixed;
+    border-radius:50%;
+    z-index:-1;
+    animation:float 10s ease-in-out infinite;
+}
+
+.circle1{
+    width:250px;
+    height:250px;
+    background:rgba(255,255,255,.08);
+    top:80px;
+    left:100px;
+}
+
+.circle2{
+    width:350px;
+    height:350px;
+    background:rgba(99,102,241,.15);
+    right:100px;
+    top:120px;
+}
+
+.circle3{
+    width:200px;
+    height:200px;
+    background:rgba(16,185,129,.15);
+    bottom:80px;
+    left:40%;
+}
+
+@keyframes float{
+    0%{transform:translateY(0);}
+    50%{transform:translateY(-20px);}
+    100%{transform:translateY(0);}
+}
+
+.container{
+    max-width:1400px;
+    margin:auto;
+
+    background:
+    rgba(255,255,255,.92);
+
+    backdrop-filter:blur(25px);
+
+    border:1px solid rgba(255,255,255,.3);
+
+    border-radius:28px;
+
+    padding:35px;
+
+    box-shadow:
+    0 30px 80px rgba(0,0,0,.25);
+}
+
+h1{
+    text-align:center;
+    font-size:48px;
+    font-weight:700;
+
+    background:
+    linear-gradient(
+        135deg,
+        #2563eb,
+        #7c3aed
+    );
+
+    background-clip:text;
+    -webkit-background-clip:text;
+
+    color:transparent;
+    -webkit-text-fill-color:transparent;
+
+    margin-bottom:30px;
+}
+
+.section-btn{
+    margin:10px;
+    padding:14px 24px;
+
+    border:none;
+    border-radius:14px;
+
+    background:
+    linear-gradient(
+        135deg,
+        #2563eb,
+        #4f46e5
+    );
+
+    color:white;
+
+    font-size:15px;
+    font-weight:600;
+
+    cursor:pointer;
+
+    transition:.3s;
+
+    box-shadow:
+    0 10px 25px rgba(37,99,235,.35);
+}
+
+.section-btn:hover{
+    transform:
+    translateY(-3px)
+    scale(1.02);
+}
+
+.teacher-btn{
+    margin-top:20px;
+    margin-right:10px;
+    padding:16px 28px;
+
+    border:none;
+    border-radius:16px;
+
+    background:
+    linear-gradient(
+        135deg,
+        #10b981,
+        #059669
+    );
+
+    color:white;
+
+    font-size:17px;
+    font-weight:700;
+
+    cursor:pointer;
+
+    transition:.3s;
+
+    box-shadow:
+    0 15px 30px rgba(16,185,129,.35);
+}
+
+.teacher-btn:hover{
+    transform:
+    translateY(-4px)
+    scale(1.02);
+}
+
+/* ===========================
+   Top Button Layout
+=========================== */
+
+.top-actions{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    flex-wrap:wrap;
+    margin-bottom:20px;
+}
+
+.left-actions{
+    display:flex;
+    gap:15px;
+}
+
+.right-actions{
+    display:flex;
+    gap:15px;
+}
+
+.teacher-view-btn{
+    background:linear-gradient(
+        135deg,
+        #f59e0b,
+        #ea580c
+    );
+
+    box-shadow:
+    0 15px 30px rgba(245,158,11,.35);
+
+    transition:.3s;
+}
+
+.download-class-btn{
+    padding:16px 28px;
+
+    border:none;
+    border-radius:16px;
+
+    cursor:pointer;
+
+    color:white;
+
+    font-size:16px;
+    font-weight:700;
+
+    background:
+    linear-gradient(
+        135deg,
+        #f59e0b,
+        #ea580c
+    );
+
+    box-shadow:
+    0 15px 30px rgba(245,158,11,.35);
+
+    transition:.3s;
+}
+
+.download-teacher-btn{
+    padding:16px 28px;
+
+    border:none;
+    border-radius:16px;
+
+    cursor:pointer;
+
+    color:white;
+
+    font-size:16px;
+    font-weight:700;
+
+    background:
+    linear-gradient(
+        135deg,
+        #f59e0b,
+        #ea580c
+    );
+
+    box-shadow:
+    0 15px 30px rgba(245,158,11,.35);
+
+    transition:.3s;
+}
+
+.teacher-view-btn:hover,
+.download-class-btn:hover,
+.download-teacher-btn:hover{
+    transform:translateY(-4px) scale(1.03);
+}
+
+/* Optional Class PDF Accent Button styling */
+.pdf-class-btn {
+    background: linear-gradient(135deg, #2563eb, #1d4ed8);
+    box-shadow: 0 15px 30px rgba(37,99,235,.35);
+}
+
+table{
+    width:100%;
+    border-collapse:separate;
+    border-spacing:0;
+    overflow:hidden;
+
+    background:white;
+
+    border-radius:18px;
+
+    box-shadow:
+    0 12px 35px rgba(0,0,0,.08);
+
+    margin-bottom:40px;
+}
+
+th{
+    background:
+    linear-gradient(
+        135deg,
+        #2563eb,
+        #4f46e5
+    );
+
+    color:white;
+
+    padding:16px;
+
+    font-size:15px;
+    font-weight:700;
+}
+
+td{
+    padding:14px;
+    text-align:center;
+
+    border-bottom:1px solid #e5e7eb;
+
+    transition:.2s;
+}
+
+tr:hover td{
+    background:#f8fafc;
+}
+
+.subject-pill{
+    background:
+    linear-gradient(
+        135deg,
+        #dbeafe,
+        #e0e7ff
+    );
+
+    color:#1e3a8a;
+
+    padding:8px;
+    border-radius:10px;
+
+    font-weight:700;
+}
+
+.teacher-pill{
+    margin-top:6px;
+
+    font-size:12px;
+
+    color:#475569;
+
+    font-weight:600;
+}
+
+h2{
+    margin-top:40px;
+}
+</style>
+</head>
+
+<body>
+
+<div class="bg-circle circle1"></div>
+<div class="bg-circle circle2"></div>
+<div class="bg-circle circle3"></div>
+
+<div class="container">
+
+<h1>Generated Timetables</h1>
+
+<div class="top-actions">
+
+    <div class="left-actions">
+        <button class="teacher-btn teacher-view-btn"
+                onclick="showTeacherTimetables()">
+            👨‍🏫 Teacher Timetables
+        </button>
+    </div>
+
+    <div class="right-actions">
+
+        <button class="download-class-btn"
+                onclick="downloadClassPDF()">
+            📄 Download Class PDF
+        </button>
+
+        <button class="download-teacher-btn"
+                onclick="downloadTeacherPDF()">
+            📘 Download Teacher PDF
+        </button>
+
+    </div>
+
+</div>
+
+<hr style="margin:25px 0;">
+
+<div id="modules"></div>
+
+<hr style="margin:25px 0;">
+
+<div id="output"></div>
+
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.31/jspdf.plugin.autotable.min.js"></script>
+
+<script>
+// 1. First fetch teachers (Updated from localStorage to sessionStorage)
+let data = JSON.parse(sessionStorage.getItem("schoolData"));
+let teachers = JSON.parse(sessionStorage.getItem("teacherData")) || [];
+
+console.log(data);
+console.log(teachers);
+
+const modules=document.getElementById("modules");
+const output=document.getElementById("output");
+
+// CHANGE 1: Replacing savedSchedules with classTimetables and sectionOwners
+const classTimetables={};
+const sectionOwners={};
+
+// 2. Create teacher timetable object
+const teacherTimetable={};
+
+teachers.forEach(t=>{
+    // CHANGE 2: Updated assignedSections to track subjects, standards, and sections
+    teacherTimetable[t.name]={
+        load:0,
+        assignedSections:{},
+        table:[]
+    };
+
+    for(let d=0;d<5;d++){
+        teacherTimetable[t.name].table[d] = new Array(
+            parseInt(data.defaultPeriods) || 8
+        ).fill("");
+    }
+});
+
+// CHANGE 3: Completely replaced assignTeachersToSections()
+function assignTeachersToSections(){
+    teachers.forEach(t=>{
+        t.assignments.forEach(a=>{
+            let subject=a.subject;
+
+            if(!teacherTimetable[t.name].assignedSections[subject]){
+                teacherTimetable[t.name].assignedSections[subject]={};
+            }
+
+            a.classes.forEach(stdName=>{
+                let std=data.standards.find(
+                    x=>x.name==stdName
+                );
+
+                let secCount=parseInt(std.sections);
+                let assigned = false;
+
+                for(let i=1;i<=secCount;i++){
+                    let section = String.fromCharCode(64+i);
+                    let key = subject + "_" + stdName + "_" + section;
+
+                    if(!sectionOwners[key]){
+                        sectionOwners[key] = t.name;
+
+                        if(!teacherTimetable[t.name].assignedSections[subject][stdName]){
+                            teacherTimetable[t.name].assignedSections[subject][stdName] = [];
+                        }
+
+                        teacherTimetable[t.name].assignedSections[subject][stdName].push(section);
+                        assigned = true;
+                        break;
+                    }
+                }
+
+                if(!assigned){
+                    console.warn(
+                        "Not enough teachers for",
+                        subject,
+                        stdName
+                    );
+                }
+            });
+        });
+    });
+}
+
+// CHANGE 5 (Part 1): Call assignments, global generation, then setup modules
+assignTeachersToSections();
+
+data.standards.forEach(std=>{
+    let secCount = parseInt(std.sections);
+    std.subjects.forEach(sub=>{
+        for(let i=1;i<=secCount;i++){
+            let section = String.fromCharCode(64+i);
+            let key = sub.subject + "_" + std.name + "_" + section;
+
+            if(!sectionOwners[key]){
+                alert(
+                    "Missing teacher for " +
+                    sub.subject +
+                    " - " +
+                    std.name +
+                    " Section " +
+                    section
+                );
+                throw new Error("Teacher Missing");
+            }
+        }
+    });
+});
+
+generateAllTimetables();
+createModules();
+
+function createModules(){
+    data.standards.forEach((std,stdIndex)=>{
+        let secCount=parseInt(std.sections);
+
+        for(let s=1;s<=secCount;s++){
+            let btn=document.createElement("button");
+
+            btn.innerText=
+            std.name+" - Section "+String.fromCharCode(64+s);
+
+            btn.className="section-btn";
+
+            btn.onclick=function(){
+                showTimetable(
+                    std,
+                    String.fromCharCode(64+s)
+                );
+            };
+
+            modules.appendChild(btn);
+        }
+    });
+}
+
+function shuffle(arr){
+    for(let i=arr.length-1;i>0;i--){
+        let j=Math.floor(Math.random()*(i+1));
+        [arr[i],arr[j]]=[arr[j],arr[i]];
+    }
+    return arr;
+}
+
+// 4. Create helper function for picking available best match teacher candidate
+function getTeacher(subject, std, section, day, period) {
+    let candidates=[];
+
+    teachers.forEach(t=>{
+        let teaches=false;
+        t.assignments.forEach(a=>{
+            if(a.subject==subject && a.classes.includes(std)) {
+                teaches=true;
+            }
+        });
+
+        if(!teaches) return;
+
+        let tt = teacherTimetable[t.name];
+
+        // CHANGE 4: Updated check to drill into subject-specific nested mappings
+        if(!tt.assignedSections[subject]) return;
+
+        // Change 2 Apply
+        if(!tt.assignedSections[subject][std] || !tt.assignedSections[subject][std].includes(section)) return;
+
+        // occupied ?
+        if(tt.table[day][period] != "") return;
+
+        // overload check bypassed
+        if(tt.load >= 999) return;
+
+        candidates.push({
+            name: t.name,
+            load: tt.load
+        });
+    });
+
+    if(candidates.length == 0) return null;
+
+    candidates.sort((a,b) => a.load - b.load);
+
+    return candidates[0];
+}
+
+// 5. Changed generateSchedule to accept standard & targeting variant sections
+function generateSchedule(std, section){
+    const DAYS=5;
+    const PERIODS=parseInt(data.defaultPeriods) || 8;
+    let timetable=[];
+
+    for(let d=0;d<DAYS;d++){
+        timetable[d]=new Array(PERIODS).fill("");
+    }
+
+    // create subject pool
+    let pool=[];
+    std.subjects.forEach(sub=>{
+        let count=parseInt(sub.periods);
+        for(let i=0;i<count;i++){
+            pool.push(sub.subject);
+        }
+    });
+
+    let weekly = std.weeklySubjects || [];
+
+    // Scrub out all instances of custom weekly items from basic core pool
+    pool = pool.filter(x => !weekly.includes(x));
+
+    // Fallback safety check to prevent infinite loop/browser freeze if pool is empty
+    if(pool.length == 0){
+        alert("Please add at least one normal subject.");
+        return timetable;
+    }
+
+    // Fill remaining periods up to the available capacity (accounting for weekly slots)
+    while(pool.length < (DAYS * PERIODS - weekly.length)){
+        pool.push(
+            pool[
+                Math.floor(Math.random()*pool.length)
+            ]
+        );
+    }
+
+    shuffle(pool);
+    let usedDays=[];
+
+    // 7. Weekly subjects generation with matching assigned tracking matrix maps
+    weekly.forEach(subject=>{
+        let placed=false;
+        let tries=0;
+
+        while(!placed && tries<100){
+            tries++;
+            let d=Math.floor(Math.random()*DAYS);
+
+            // Different day only if possible
+            if(
+            weekly.length<=DAYS &&
+            usedDays.includes(d)
+            ){
+                continue;
+            }
+
+            let p=Math.floor(Math.random()*PERIODS);
+
+            if(timetable[d][p]==""){
+                let teacher = getTeacher(subject, std.name, section, d, p);
+                if(teacher){
+                    timetable[d][p] = {
+                        subject: subject,
+                        teacher: teacher.name
+                    };
+                    teacherTimetable[teacher.name].table[d][p] = std.name + section + " " + subject;
+                    teacherTimetable[teacher.name].load++;
+                    
+                    if(!usedDays.includes(d)){
+                        usedDays.push(d);
+                    }
+                    placed=true;
+                }
+            }
+        }
+    });
+
+    // 6. While placing main pool subjects (Updated logic using getTeacher)
+    for(let i=0;i<pool.length;i++){
+        let subject=pool[i];
+        let placed=false;
+        let tries=0;
+
+        while(!placed && tries<500){
+            tries++;
+            let d=Math.floor(Math.random()*DAYS);
+            let p=Math.floor(Math.random()*PERIODS);
+
+            // slot occupied
+            if(timetable[d][p]!="") continue;
+
+            // same subject max 2/day
+            let count=timetable[d].filter(x=>x && x.subject==subject).length;
+            if(count>=2) continue;
+
+            // avoid consecutive periods
+            if((timetable[d][p-1] && timetable[d][p-1].subject==subject) || (timetable[d][p+1] && timetable[d][p+1].subject==subject)) continue;
+
+            let teacher = getTeacher(subject, std.name, section, d, p);
+            if(teacher) {
+                timetable[d][p] = {
+                    subject: subject,
+                    teacher: teacher.name
+                };
+                teacherTimetable[teacher.name].table[d][p] = std.name + section + " " + subject;
+                teacherTimetable[teacher.name].load++;
+                placed=true;
+            }
+        }
+    }
+
+    // Fill remaining blanks safely by filtering out weekly subjects
+    let allSubjects=std.subjects.map(x=>x.subject).filter(x => !weekly.includes(x));
+
+    for(let d=0;d<DAYS;d++){
+        for(let p=0;p<PERIODS;p++){
+            if(timetable[d][p]==""){
+                let choices=shuffle([...allSubjects]);
+
+                for(let s of choices){
+                    let count=timetable[d].filter(x=>x && x.subject==s).length;
+
+                    if(
+                    count<2 &&
+                    (!timetable[d][p-1] || timetable[d][p-1].subject!=s) &&
+                    (!timetable[d][p+1] || timetable[d][p+1].subject!=s)
+                    ){
+                        let teacher = getTeacher(s, std.name, section, d, p);
+                        if(teacher) {
+                            timetable[d][p] = {
+                                subject: s,
+                                teacher: teacher.name
+                            };
+                            teacherTimetable[teacher.name].table[d][p] = std.name + section + " " + s;
+                            teacherTimetable[teacher.name].load++;
+                            break;
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    return timetable;
+}
+
+// CHANGE 5 (Part 2): Added generateAllTimetables() block
+function generateAllTimetables(){
+    data.standards.forEach(std=>{
+        let secCount=parseInt(std.sections);
+
+        for(let i=1;i<=secCount;i++){
+            let section=String.fromCharCode(64+i);
+
+            let key=std.name+"_"+section;
+
+            classTimetables[key]=generateSchedule(std, section);
+        }
+    });
+}
+
+function showTimetable(std,section){
+    output.innerHTML="";
+    const PERIODS=parseInt(data.defaultPeriods) || 8;
+
+    let title=document.createElement("h2");
+    title.innerText=std.name+" - Section "+section;
+    output.appendChild(title);
+    
+    let key=std.name+"_"+section;
+
+    // CHANGE 6: Updated to pull data strictly from the pre-generated classTimetables array map
+    let schedule=classTimetables[key];
+    let table=document.createElement("table");
+
+    let headerHTML = `<tr><th>Day</th>`;
+    for(let i=1; i<=PERIODS; i++){
+        headerHTML += `<th>P${i}</th>`;
+    }
+    headerHTML += `</tr>`;
+    table.innerHTML = headerHTML;
+
+    let days=["Monday","Tuesday","Wednesday","Thursday","Friday"];
+
+    for(let d=0;d<5;d++){
+        let row=document.createElement("tr");
+        row.innerHTML=`<td>${days[d]}</td>`;
+
+        for(let p=0;p<PERIODS;p++){
+            let td=document.createElement("td");
+            
+            let cell=schedule[d][p];
+            if(cell){
+                // CHANGE 7: Applied enhanced block container markup style variants for layout designs
+                td.innerHTML=`
+                <div class="subject-pill">
+                    ${cell.subject}
+                </div>
+
+                <div class="teacher-pill">
+                    ${cell.teacher}
+                </div>
+                `;
+            } else {
+                td.innerText = "";
+            }
+            row.appendChild(td);
+        }
+        table.appendChild(row);
+    }
+   
+    output.appendChild(table);
+}
+
+// 9. Add teacher timetable display panel views
+function showTeacherTimetables() {
+    output.innerHTML="";
+    const PERIODS=parseInt(data.defaultPeriods) || 8;
+    let days=["Monday","Tuesday","Wednesday","Thursday","Friday"];
+
+    for(let teacher in teacherTimetable){
+        let title=document.createElement("h2");
+        title.innerText = teacher + " (Total Load: " + teacherTimetable[teacher].load + "/20)";
+        output.appendChild(title);
+
+        let table=document.createElement("table");
+
+        let headerHTML = `<tr><th>Day</th>`;
+        for(let i=1; i<=PERIODS; i++){
+            headerHTML += `<th>P${i}</th>`;
+        }
+        headerHTML += `</tr>`;
+        table.innerHTML = headerHTML;
+
+        for(let d=0;d<5;d++){
+            let row=document.createElement("tr");
+            row.innerHTML=`<td>${days[d]}</td>`;
+
+            for(let p=0;p<PERIODS;p++){
+                let td=document.createElement("td");
+                td.innerText = teacherTimetable[teacher].table[d][p] || "-";
+                row.appendChild(td);
+            }
+            table.appendChild(row);
+        }
+        output.appendChild(table);
+    }
+}
+
+function downloadClassPDF(){
+    const { jsPDF } = window.jspdf;
+    const doc = new jsPDF("landscape");
+    const PERIODS = parseInt(data.defaultPeriods) || 8;
+    const days = [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday"
+    ];
+
+    let first=true;
+
+    data.standards.forEach(std=>{
+        let sections=parseInt(std.sections);
+
+        for(let s=1;s<=sections;s++){
+            if(!first){
+                doc.addPage();
+            }
+            first=false;
+
+            let section=String.fromCharCode(64+s);
+            let key=std.name+"_"+section;
+            let schedule=classTimetables[key];
+
+            doc.setFontSize(20);
+            doc.text(
+                std.name+" - Section "+section,
+                14,
+                20
+            );
+
+            let head=[["Day"]];
+            for(let i=1;i<=PERIODS;i++){
+                head[0].push("P"+i);
+            }
+
+            let body=[];
+            for(let d=0;d<5;d++){
+                let row=[days[d]];
+
+                for(let p=0;p<PERIODS;p++){
+                    let cell=schedule[d][p];
+                    row.push(
+                        cell ?
+                        cell.subject+"\n("+cell.teacher+")"
+                        :
+                        ""
+                    );
+                }
+                body.push(row);
+            }
+
+            doc.autoTable({
+                startY:30,
+                head:head,
+                body:body,
+                styles:{
+                    halign:"center",
+                    valign:"middle",
+                    fontSize:10
+                },
+                headStyles:{
+                    fillColor:[37,99,235]
+                }
+            });
+        }
+    });
+
+    doc.save("Generated_Class_Timetables.pdf");
+}
+
+function downloadTeacherPDF(){
+    const { jsPDF } = window.jspdf;
+    const doc=new jsPDF("landscape");
+    const PERIODS=parseInt(data.defaultPeriods)||8;
+    const days=[
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday"
+    ];
+
+    let first=true;
+
+    for(let teacher in teacherTimetable){
+        if(!first){
+            doc.addPage();
+        }
+        first=false;
+
+        doc.setFontSize(20);
+        doc.text(
+            teacher+
+            "   (Load : "+
+            teacherTimetable[teacher].load+")",
+            14,
+            20
+        );
+
+        let head=[["Day"]];
+        for(let i=1;i<=PERIODS;i++){
+            head[0].push("P"+i);
+        }
+
+        let body=[];
+        for(let d=0;d<5;d++){
+            let row=[days[d]];
+
+            for(let p=0;p<PERIODS;p++){
+                row.push(
+                    teacherTimetable[teacher].table[d][p] || ""
+                );
+            }
+            body.push(row);
+        }
+
+        doc.autoTable({
+            startY:30,
+            head:head,
+            body:body,
+            styles:{
+                halign:"center",
+                valign:"middle",
+                fontSize:10
+            },
+            headStyles:{
+                fillColor:[16,185,129]
+            }
+        });
+    }
+
+    doc.save("Teacher_Timetables.pdf");
+}
+</script>
+
+</body>
+</html>

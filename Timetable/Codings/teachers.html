@@ -1,0 +1,945 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Teacher Management</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+
+        body {
+            min-height: 100vh;
+            padding: 40px;
+            overflow-x: hidden;
+            background:
+                radial-gradient(circle at top left, #60a5fa 0%, transparent 35%),
+                radial-gradient(circle at bottom right, #7c3aed 0%, transparent 35%),
+                linear-gradient(135deg, #0f172a, #1e293b, #312e81);
+        }
+
+        .container {
+            max-width: 1300px;
+            margin: auto;
+            background: rgba(255, 255, 255, .92);
+            backdrop-filter: blur(25px);
+            border: 1px solid rgba(255, 255, 255, .3);
+            border-radius: 28px;
+            padding: 35px;
+            box-shadow: 0 30px 80px rgba(0, 0, 0, .25);
+        }
+
+        h1 {
+            text-align: center;
+            font-size: 48px;
+            font-weight: 700;
+            background: linear-gradient(135deg, #2563eb, #7c3aed);
+            background-clip: text;
+            -webkit-background-clip: text;
+            color: transparent;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 35px;
+        }
+
+        .workload {
+            padding: 18px;
+            border-radius: 16px;
+            background: linear-gradient(135deg, #eff6ff, #dbeafe);
+            color: #1e3a8a;
+            font-size: 22px;
+            font-weight: bold;
+            margin-bottom: 30px;
+        }
+
+        /* SUBJECT TABS */
+        .subject-tabs {
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+            margin-bottom: 30px;
+        }
+
+        .subject-card {
+            position: relative;
+            padding: 18px 35px;
+            border: none;
+            border-radius: 18px;
+            background: linear-gradient(135deg, #ef4444, #dc2626);
+            color: white;
+            font-size: 18px;
+            font-weight: 700;
+            letter-spacing: .5px;
+            cursor: pointer;
+            box-shadow: 0 12px 30px rgba(220, 38, 38, .35);
+            transition: .35s ease;
+            overflow: hidden;
+        }
+
+        .subject-card::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: -120%;
+            width: 70%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, .35), transparent);
+            transition: .7s;
+        }
+
+        .subject-card:hover {
+            transform: translateY(-5px) scale(1.03);
+            box-shadow: 0 18px 40px rgba(220, 38, 38, .45);
+        }
+
+        .subject-card:hover::before {
+            left: 150%;
+        }
+
+        /* GREEN STATE */
+        .subject-card.green {
+            background: linear-gradient(135deg, #22c55e, #059669);
+            color: white;
+            box-shadow: 0 12px 30px rgba(5, 150, 105, .35);
+        }
+
+        .subject-card.green:hover {
+            box-shadow: 0 18px 40px rgba(5, 150, 105, .45);
+        }
+
+        /* SUBJECT DETAILS */
+        .subject-details {
+            background: white;
+            border: none;
+            border-radius: 20px;
+            padding: 25px;
+            min-height: 180px;
+            margin-bottom: 40px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, .08);
+        }
+
+        .status-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 12px;
+            border-bottom: 1px solid #ddd;
+            font-size: 18px;
+        }
+
+        .red {
+            color: red;
+            font-weight: bold;
+        }
+
+        .green {
+            color: #28a745;
+            font-weight: bold;
+        }
+
+        .teacher-box {
+            background: white;
+            border: none;
+            border-radius: 20px;
+            padding: 25px;
+            margin-bottom: 25px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, .08);
+            transition: .3s;
+        }
+
+        .teacher-box:hover {
+            transform: translateY(-4px);
+        }
+
+        .teacher-name {
+            width: 100%;
+            padding: 12px;
+            margin-bottom: 20px;
+        }
+
+        .assignment {
+            display: flex;
+            gap: 25px;
+            align-items: flex-start;
+            margin-bottom: 15px;
+        }
+
+        .assignment select {
+            padding: 10px;
+            width: 220px;
+        }
+
+        .standards {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+
+        .add-subject {
+            background: linear-gradient(135deg, #3b82f6, #2563eb);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            padding: 12px 20px;
+        }
+
+        .add-teacher {
+            background: linear-gradient(135deg, #10b981, #059669);
+            color: white;
+            padding: 15px 28px;
+            border: none;
+            border-radius: 14px;
+            font-size: 16px;
+            font-weight: bold;
+        }
+
+        .generate {
+            width: 100%;
+            margin-top: 40px;
+            padding: 18px;
+            font-size: 18px;
+            font-weight: bold;
+            background: #999;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            cursor: not-allowed;
+        }
+
+        .generate.enabled {
+            background: #28a745;
+            cursor: pointer;
+        }
+
+        .remove-subject {
+            background: linear-gradient(135deg, #ef4444, #dc2626);
+            color: white;
+            border: none;
+            padding: 10px 18px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 15px;
+            font-weight: bold;
+            transition: 0.3s;
+        }
+
+        .remove-subject:hover {
+            background: #c82333;
+        }
+
+        .remove-teacher {
+            background: linear-gradient(135deg, #ef4444, #dc2626);
+            color: white;
+            border: none;
+            padding: 10px 18px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        .remove-teacher:hover {
+            background: #c82333;
+        }
+
+        /* FLOATING BACKGROUND CIRCLES */
+        .bg-circle {
+            position: fixed;
+            border-radius: 50%;
+            z-index: -1;
+            animation: float 10s ease-in-out infinite;
+        }
+
+        .circle1 {
+            width: 250px;
+            height: 250px;
+            background: rgba(255, 255, 255, .08);
+            top: 80px;
+            left: 100px;
+        }
+
+        .circle2 {
+            width: 350px;
+            height: 350px;
+            background: rgba(99, 102, 241, .15);
+            right: 100px;
+            top: 120px;
+        }
+
+        .circle3 {
+            width: 200px;
+            height: 200px;
+            background: rgba(16, 185, 129, .15);
+            bottom: 80px;
+            left: 40%;
+        }
+
+        @keyframes float {
+            0% { transform: translateY(0); }
+            50% { transform: translateY(-20px); }
+            100% { transform: translateY(0); }
+        }
+    </style>
+</head>
+<body>
+
+<div class="bg-circle circle1"></div>
+<div class="bg-circle circle2"></div>
+<div class="bg-circle circle3"></div>
+
+<div class="container">
+    <h1>Teacher Management</h1>
+
+    <div class="workload" id="workloadDisplay"></div>
+
+    <div class="subject-tabs" id="subjectTabs"></div>
+
+    <div class="subject-details" id="subjectDetails"></div>
+    
+    <hr>
+    <br>
+    <h2>Teachers</h2>
+    <br>
+
+    <input
+        type="text"
+        id="teacherSearch"
+        placeholder="Search Teacher..."
+        oninput="searchTeacher()"
+        style="
+            width:100%;
+            padding:12px;
+            margin-bottom:20px;
+            border:1px solid #ccc;
+            border-radius:8px;
+            font-size:16px;
+        "
+    >
+
+    <div id="teachersContainer"></div>
+
+    <button class="add-teacher" onclick="addTeacher()">
+        + Add Teacher
+    </button>
+
+    <button id="generateBtn" class="generate" onclick="generateTimetable()">
+        Generate Timetable
+    </button>
+</div>
+
+<script>
+    let schoolData = JSON.parse(sessionStorage.getItem("schoolData")) || {
+        standards: [
+            { name: "Class 10", sections: 1, subjects: [{ subject: "Maths", periods: 45 }, { subject: "Science", periods: 30 }] },
+            { name: "Class 11", sections: 1, subjects: [{ subject: "Maths", periods: 25 }, { subject: "Physics", periods: 20 }] }
+        ]
+    };
+    console.log(schoolData);
+
+    // --- MODIFICATION 1 START ---
+    const WORKLOAD = Math.floor(parseInt(schoolData.defaultPeriods) * 5 * 0.8) || 40; // Guard fallback added just in case
+    document.getElementById("workloadDisplay").innerHTML = `Teacher Workload : ${WORKLOAD} Periods / Week`;
+    // --- MODIFICATION 1 END ---
+
+    let subjectTabs = document.getElementById("subjectTabs");
+    let subjectDetails = document.getElementById("subjectDetails");
+    let subjectMap = {};
+
+    // --- REPLACED LOGIC START ---
+    let subjectStats = {};
+
+    schoolData.standards.forEach(std => {
+        std.subjects.forEach(sub => {
+            if (!subjectStats[sub.subject]) {
+                subjectStats[sub.subject] = 0;
+            }
+            subjectStats[sub.subject] += parseInt(std.sections);
+        });
+    });
+
+    for (let subject in subjectStats) {
+        let minimumTeachers = subjectStats[subject];
+
+        schoolData.standards.forEach(std => {
+            let sub = std.subjects.find(x => x.subject == subject);
+
+            if (sub) {
+                if (!subjectMap[subject]) {
+                    subjectMap[subject] = {};
+                }
+
+                subjectMap[subject][std.name] = {
+                    available: 0,
+                    type: sub.type
+                };
+
+                subjectMap[subject].totalMin = minimumTeachers;
+            }
+        });
+    }
+    // --- REPLACED LOGIC END ---
+
+    console.log(subjectMap);
+
+    for (let subject in subjectMap) {
+        let card = document.createElement("div");
+        card.className = "subject-card";
+        card.id = "card_" + subject;
+        card.innerHTML = subject;
+
+        card.onclick = () => {
+            showSubject(subject);
+        };
+
+        subjectTabs.appendChild(card);
+    }
+
+    if (Object.keys(subjectMap).length > 0) {
+        showSubject(Object.keys(subjectMap)[0]);
+    }
+
+    function showSubject(subject) {
+        if (!subject || !subjectMap[subject]) return;
+        
+        let totalAvailable = 0;
+        let totalMin = subjectMap[subject].totalMin;
+
+        for(let std in subjectMap[subject])
+        {
+            if(std=="totalMin")
+                continue;
+
+            totalAvailable += subjectMap[subject][std].available;
+        }
+
+        let html=`
+        <h2>${subject}</h2>
+
+        <div style="
+        display:flex;
+        gap:50px;
+        margin:20px 0;
+        font-size:20px;
+        font-weight:bold;
+        ">
+
+        <div>
+        Required :
+        <span class="red" id="totalMin_${subject}">
+        ${totalMin}
+        </span>
+        </div>
+
+        <div>
+        Available :
+        <span class="${
+        totalAvailable>=totalMin ? 'green':'red'
+        }" id="totalAvailable_${subject}">
+        ${totalAvailable}
+        </span>
+        </div>
+
+        </div>
+        `;
+
+        for (let std in subjectMap[subject]) {
+            if (std == "totalMin") continue;
+            let row = subjectMap[subject][std];
+            
+            html += `
+            <div class="status-row">
+                <div>${std}</div>
+                <div class="${totalAvailable >= totalMin ? 'green' : 'red'}" id="${subject}_${std}">Available : ${row.available}</div>
+            </div>`;
+        }
+        subjectDetails.innerHTML = html;
+    }
+
+    let teachersContainer = document.getElementById("teachersContainer");
+    let teacherCount = 0;
+
+    function addTeacher(savedTeacher = null) {
+        document.getElementById("teacherSearch").value = "";
+        teacherCount++;
+        let nameValue = savedTeacher ? savedTeacher.name : "";
+        let html = `
+        <div class="teacher-box" id="teacher${teacherCount}">
+            <div style="display:flex; justify-content:space-between; align-items:center;">
+                <h3>Teacher ${teacherCount}</h3>
+                <button class="remove-teacher" onclick="removeTeacher(this)">Remove Teacher</button>
+            </div>
+            <br>
+            <input type="text" class="teacher-name" placeholder="Teacher Name" value="${nameValue}" oninput="calculateAvailability(); searchTeacher();">
+            <div class="teacher-load"
+            style="
+            margin-bottom:15px;
+            font-weight:bold;
+            color:#007bff;
+            ">
+            Load : 0 / ${WORKLOAD}
+            <br>
+            Sections : 0
+            </div>
+            <div class="subjectsContainer" id="subjectsContainer${teacherCount}"></div>
+            <button class="add-subject" onclick="addSubjectRow(${teacherCount})">+ Add Subject</button>
+        </div>`;
+
+        teachersContainer.insertAdjacentHTML("beforeend", html);
+        
+        if (savedTeacher && savedTeacher.assignments && savedTeacher.assignments.length > 0) {
+            savedTeacher.assignments.forEach(asn => {
+                addSubjectRow(teacherCount, asn);
+            });
+        } else {
+            addSubjectRow(teacherCount);
+        }
+        searchTeacher();
+    }
+
+    function addSubjectRow(teacherId, savedAsn = null) {
+        let box = document.getElementById("subjectsContainer" + teacherId);
+
+        let hasEmpty=false;
+        box.querySelectorAll("select").forEach(select=>{
+            if(select.value=="Select Subject")
+                hasEmpty=true;
+        });
+        if(hasEmpty && !savedAsn){
+            alert("Please select a subject in the existing row first.");
+            return;
+        }
+
+        let usedSubjects = [];
+
+        box.querySelectorAll("select").forEach(select => {
+            if (select.value != "Select Subject") {
+                usedSubjects.push(select.value);
+            }
+        });
+
+        if (usedSubjects.length == Object.keys(subjectMap).length && !savedAsn) {
+            alert("All available subjects are already assigned.");
+            return;
+        }
+
+        let activeSub = savedAsn ? savedAsn.subject : "Select Subject";
+
+        let html = `
+        <div class="assignment">
+            <select onchange="updateStandards(this);refreshSubjectDropdowns();calculateAvailability();">
+                <option ${activeSub == "Select Subject" ? "selected" : ""}>Select Subject</option>
+                ${Object.keys(subjectMap).map(sub => {
+                    if (usedSubjects.includes(sub) && sub !== activeSub)
+                        return "";
+
+                    return `<option ${sub == activeSub ? "selected" : ""}>${sub}</option>`;
+                }).join("")}
+            </select>
+            <div class="standards">
+                ${schoolData.standards.map(std => {
+                    if(subjectMap[activeSub] && subjectMap[activeSub][std.name]) {
+                        let isChecked = savedAsn && savedAsn.classes.includes(std.name) ? "checked" : "";
+                        return `
+                            <label>
+                                <input
+                                    type="checkbox"
+                                    data-std="${std.name}"
+                                    ${isChecked}
+                                    onchange="calculateAvailability()"
+                                >
+                                ${std.name}
+                            </label>
+                        `;
+                    }
+                    return "";
+                }).join("")}
+            </div>
+            <button
+                type="button"
+                class="remove-subject"
+                onclick="
+                let container=this.parentElement.parentElement;
+                let row=this.parentElement;
+                if(container.children.length==1 && row.querySelector('select').value!='Select Subject'){
+                    alert('At least one subject is required');
+                    return;
+                }
+                this.parentElement.remove();
+                refreshSubjectDropdowns();
+                calculateAvailability();
+                "
+            >
+                Remove
+            </button>
+        </div>`;
+
+        box.insertAdjacentHTML("beforeend", html);
+        refreshSubjectDropdowns();
+    }
+
+    function updateStandards(select){
+        let subject=select.value;
+        let standardsDiv=select.parentElement.querySelector(".standards");
+        let html="";
+
+        schoolData.standards.forEach(std=>{
+            if(subjectMap[subject] && subjectMap[subject][std.name]){
+                html+=`
+                <label>
+                    <input
+                        type="checkbox"
+                        data-std="${std.name}"
+                        onchange="calculateAvailability()"
+                    >
+                    ${std.name}
+                </label>`;
+            }
+        });
+
+        standardsDiv.innerHTML=html;
+    }
+
+    function calculateAvailability() {
+        for (let subject in subjectMap) {
+            for (let std in subjectMap[subject]) {
+                if (std == "totalMin") continue;
+                subjectMap[subject][std].available = 0;
+            }
+        }
+
+        let invalidRow = false;
+        let teacherDataArray = [];
+        let teacherLoads = {};
+
+        document.querySelectorAll(".teacher-box").forEach(teacher => {
+            let name = teacher.querySelector(".teacher-name").value;
+            let assignments = [];
+            let totalLoad = 0;
+            let totalSections = 0;
+
+            teacher.querySelectorAll(".assignment").forEach(row => {
+                let subject = row.querySelector("select").value;
+                let checkedCheckboxes = row.querySelectorAll("input[type='checkbox']:checked");
+
+                if(subject!="Select Subject" && checkedCheckboxes.length==0)
+                {
+                    invalidRow=true;
+                }
+
+                let classes = [];
+                row.querySelectorAll("input[type='checkbox']").forEach(cb => {
+                    let std = cb.dataset.std;
+                    if (cb.checked) {
+                        classes.push(std);
+                        let stdObj =
+                        schoolData.standards.find(
+                        s => s.name == std
+                        );
+
+                        if(stdObj){
+                            totalSections +=
+                            parseInt(stdObj.sections);
+                        }
+                        if (subjectMap[subject] && subjectMap[subject][std]) {
+                            subjectMap[subject][std].available++;
+                        }
+                    }
+                });
+
+                if(subject !== "Select Subject"){
+                    let subjectLoad = 0;
+                    classes.forEach(stdName=>{
+                        let std = schoolData.standards.find(s => s.name == stdName);
+                        if(std){
+                            let sub = std.subjects.find(x => x.subject == subject);
+                            if(sub){
+                                subjectLoad += parseInt(sub.periods);
+                            }
+                        }
+                    });
+                    totalLoad += subjectLoad;
+                    assignments.push({
+                        subject,
+                        classes
+                    });
+                }
+            });
+
+            teacherDataArray.push({ name: name, assignments: assignments });
+            teacherLoads[name] = totalLoad;
+            let loadBox =
+            teacher.querySelector(".teacher-load");
+
+            if(loadBox){
+                // --- MODIFICATION 3 START ---
+                let periodsPerSection = 0;
+                teacher.querySelectorAll(".assignment").forEach(row => {
+                    let subject = row.querySelector("select").value;
+                    if(subject == "Select Subject") return;
+
+                    let firstChecked = row.querySelector("input[type='checkbox']:checked");
+                    if(!firstChecked) return;
+
+                    let stdName = firstChecked.dataset.std;
+                    let stdObj = schoolData.standards.find(s => s.name == stdName);
+
+                    if(stdObj){
+                        let subObj = stdObj.subjects.find(x => x.subject == subject);
+                        if(subObj){
+                            periodsPerSection = parseInt(subObj.periods);
+                        }
+                    }
+                });
+
+                let maxSections = periodsPerSection > 0 ? Math.floor(WORKLOAD / periodsPerSection) : 0;
+
+                loadBox.innerHTML = `
+                Load : ${totalLoad}/${WORKLOAD}
+                <br>
+                Sections Assigned : ${totalSections}
+                <br>
+                Maximum Sections Allowed : ${maxSections}
+                `;
+                // --- MODIFICATION 3 END ---
+            }
+        });
+
+        sessionStorage.setItem("teacherData", JSON.stringify(teacherDataArray));
+
+        let allGreen = true;
+
+        for (let subject in subjectMap) {
+            let totalMin = subjectMap[subject].totalMin;
+            let totalAvailable = 0;
+
+            for(let std in subjectMap[subject])
+            {
+                if(std=="totalMin") continue;
+                totalAvailable += subjectMap[subject][std].available;
+            }
+
+            let subjectGreen = (totalAvailable >= totalMin);
+            if (!subjectGreen) {
+                allGreen = false;
+            }
+
+            for (let std in subjectMap[subject]) {
+                if (std == "totalMin") continue;
+                let row = subjectMap[subject][std];
+                let element = document.getElementById(`${subject}_${std}`);
+
+                if (element) {
+                    element.innerHTML = `Available : ${row.available}`;
+                    element.className = subjectGreen ? "green" : "red";
+                }
+            }
+
+            let minElement=document.getElementById(`totalMin_${subject}`);
+            let availableElement=document.getElementById(`totalAvailable_${subject}`);
+
+            if(minElement)
+            {
+                minElement.innerHTML=totalMin;
+            }
+
+            if(availableElement)
+            {
+                availableElement.innerHTML=totalAvailable;
+                availableElement.className = subjectGreen ? "green" : "red";
+            }
+
+            let card = document.getElementById("card_" + subject);
+            if (card) {
+                if (subjectGreen) {
+                    card.classList.add("green");
+                } else {
+                    card.classList.remove("green");
+                }
+            }
+        }
+
+        for(let teacherName in teacherLoads){
+            if(teacherLoads[teacherName] > WORKLOAD){
+                allGreen = false;
+                alert(teacherName + " workload exceeded (" + teacherLoads[teacherName] + "/" + WORKLOAD + ")");
+                break;
+            }
+        }
+
+        let emptyTeacher=false;
+        document.querySelectorAll(".teacher-box").forEach(teacher => {
+            if (teacher.style.display !== "none") {
+                let input = teacher.querySelector(".teacher-name");
+                if(input && input.value.trim()=="")
+                    emptyTeacher=true;
+            }
+        });
+
+        if(emptyTeacher)
+            allGreen=false;
+
+        if(invalidRow)
+            allGreen=false;
+
+        document.querySelectorAll(".teacher-box").forEach(teacher=>{
+            let rows = teacher.querySelectorAll(".assignment");
+            if(rows.length==0)
+            {
+                allGreen=false;
+            }
+        });
+
+        let btn = document.getElementById("generateBtn");
+        if (allGreen) {
+            btn.disabled = false;
+            btn.classList.add("enabled");
+        } else {
+            btn.disabled = true;
+            btn.classList.remove("enabled");
+        }
+    }
+
+    function refreshSubjectDropdowns(){
+        document.querySelectorAll(".teacher-box").forEach(teacher=>{
+            let usedSubjects=[];
+
+            teacher.querySelectorAll(".assignment select").forEach(select=>{
+                if(select.value!="Select Subject"){
+                    usedSubjects.push(select.value);
+                }
+            });
+
+            teacher.querySelectorAll(".assignment select").forEach(select=>{
+                let current = select.value;
+
+                select.innerHTML=`<option>Select Subject</option>`;
+
+                Object.keys(subjectMap).forEach(sub=>{
+                    if (sub == "totalMin") return;
+                    if(sub==current || !usedSubjects.includes(sub)){
+                        select.innerHTML += `
+                        <option ${sub==current?"selected":""}>
+                            ${sub}
+                        </option>`;
+                    }
+                });
+            });
+        });
+    }
+
+    function removeTeacher(btn){
+        let teacher=btn.closest(".teacher-box");
+
+        if(document.querySelectorAll(".teacher-box").length==1)
+        {
+            alert("At least one teacher is required.");
+            return;
+        }
+
+        teacher.remove();
+        searchTeacher();
+        refreshSubjectDropdowns();
+        calculateAvailability();
+    }
+
+    function searchTeacher(){
+        let keyword=document.getElementById("teacherSearch").value.toLowerCase();
+
+        document.querySelectorAll(".teacher-box").forEach(teacher=>{
+            let name=teacher.querySelector(".teacher-name").value.toLowerCase();
+
+            if(name.includes(keyword))
+            {
+                teacher.style.display="block";
+            }
+            else
+            {
+                teacher.style.display="none";
+            }
+        });
+    }
+
+    function generateTimetable()
+    {
+        let anyError = false;
+
+        document.querySelectorAll(".teacher-box").forEach(teacher => {
+            let teacherName = teacher.querySelector(".teacher-name").value.trim();
+            if(teacherName == "") anyError = true;
+
+            let rows = teacher.querySelectorAll(".assignment");
+            if(rows.length == 0) anyError = true;
+
+            rows.forEach(row => {
+                let subject = row.querySelector("select").value;
+                let checkedCheckboxes = row.querySelectorAll("input[type='checkbox']:checked");
+                
+                if(subject == "Select Subject" || checkedCheckboxes.length == 0) {
+                    anyError = true;
+                }
+            });
+        });
+
+        if(anyError)
+        {
+            alert("Please complete all teacher assignments.");
+            return;
+        }
+
+        calculateAvailability();
+        window.location.href = "timetable.html";
+    }
+
+    let teachers = JSON.parse(sessionStorage.getItem("teacherData")) || [];
+    let teacherTimetable = {};
+
+    teachers.forEach(t => {
+        teacherTimetable[t.name] = {
+            load: 0,
+            table: []
+        };
+    });
+
+    function getTeacher(subject, std, section, day, period) {
+        let candidates = [];
+
+        teachers.forEach(t => {
+            let teaches = false;
+
+            t.assignments.forEach(a => {
+                if (a.subject == subject && a.classes.includes(std)) {
+                    teaches = true;
+                }
+            });
+
+            if (!teaches) return;
+
+            let tt = teacherTimetable[t.name];
+
+            if (tt.table[day] && tt.table[day][period] != "") return;
+            
+            if (tt.load >= WORKLOAD) return;
+
+            candidates.push({
+                name: t.name,
+                load: tt.load
+            });
+        });
+
+        if (candidates.length == 0) return null;
+
+        candidates.sort((a, b) => a.load - b.load);
+        return candidates[0];
+    }
+
+    let teacherData = JSON.parse(sessionStorage.getItem("teacherData")) || [];
+    if (teacherData.length > 0) {
+        teacherData.forEach(t => addTeacher(t));
+    } else {
+        addTeacher(); 
+    }
+    calculateAvailability();
+</script>
+
+</body>
+</html>

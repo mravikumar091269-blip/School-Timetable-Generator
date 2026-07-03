@@ -1,0 +1,730 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>School Timetable Builder</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;font-family:Arial,sans-serif;}
+body{
+    min-height:100vh;
+    padding:40px;
+    overflow-x:hidden;
+    background:
+    radial-gradient(circle at top left,#60a5fa 0%,transparent 35%),
+    radial-gradient(circle at bottom right,#7c3aed 0%,transparent 35%),
+    linear-gradient(
+        135deg,
+        #0f172a,
+        #1e293b,
+        #312e81
+    );
+    background-size:cover;
+}
+.container{
+    width:1200px;
+    max-width:95%;
+    margin:auto;
+    background:
+    rgba(255,255,255,.92);
+    backdrop-filter:blur(25px);
+    border:1px solid rgba(255,255,255,.3);
+    border-radius:28px;
+    padding:35px;
+    box-shadow:
+    0 30px 80px rgba(0,0,0,.25);
+}
+.table{
+    display:grid;
+    grid-template-columns:1fr 1fr 1.8fr 1fr;
+    gap:12px;
+}
+.cell{
+    background:white;
+    border:none;
+    border-radius:18px;
+    padding:18px;
+    box-shadow:
+        0 8px 25px rgba(0,0,0,.05);
+    transition:.3s;
+}
+.cell:hover{
+    transform:translateY(-4px);
+}
+.heading{
+    background:
+    linear-gradient(
+        135deg,
+        #2563eb,
+        #4f46e5
+    );
+    color:white;
+    font-size:19px;
+    font-weight:600;
+    border-radius:16px;
+    letter-spacing:.5px;
+    text-align:center;
+}
+label{display:block;margin-bottom:8px;font-weight:bold;}
+input{
+    width:100%;
+    padding:12px 14px;
+    border:2px solid #e2e8f0;
+    border-radius:12px;
+    font-size:15px;
+    transition:.3s;
+}
+input:focus{
+    outline:none;
+    border-color:#6366f1;
+    box-shadow:
+    0 0 0 4px
+    rgba(99,102,241,.15);
+}
+.standard{display:flex;align-items:center;justify-content:center;font-weight:bold;gap:8px;}
+
+/* Styled container to hold input, edit, and dynamic save button */
+.edit-container {display:flex;align-items:center;width:100%;gap:6px;}
+.std-input {font-weight:bold;border:1px solid transparent;background:transparent;cursor:default;pointer-events:none;flex-grow:1;}
+.std-input.editable {border:1px solid #ccc;background:#fff;cursor:text;pointer-events:auto;}
+.edit-btn {background:none;border:none;cursor:pointer;font-size:18px;margin:0;padding:4px;width:auto;display:inline-block;}
+.inline-save-btn {background:#28a745;color:white;border:none;padding:6px 10px;border-radius:4px;cursor:pointer;font-size:13px;font-weight:bold;display:none;width:auto;margin:0;}
+
+.subject-header{
+    background:
+    linear-gradient(
+        135deg,
+        #eef2ff,
+        #e0e7ff
+    );
+    color:#3730a3;
+    padding:14px;
+    border-radius:12px;
+    font-weight:600;
+    transition:.3s;
+    text-align:center;
+    cursor:pointer;
+}
+.subject-header:hover{
+    background:
+    linear-gradient(
+        135deg,
+        #dbeafe,
+        #c7d2fe
+    );
+}
+.subject-content{
+    display:none;
+    margin-top:12px;
+    animation:fadeIn .35s ease;
+}
+@keyframes fadeIn{
+    from{
+        opacity:0;
+        transform:translateY(-10px);
+    }
+    to{
+        opacity:1;
+        transform:translateY(0);
+    }
+}
+.subject-row{display:flex;align-items:center;gap:10px;margin-top:10px;}
+.subject-row span{width:90px;font-weight:bold;}
+.period-row{display:flex;justify-content:space-between;align-items:center;margin-top:10px;padding:8px;background:#f5f5f5;border-radius:6px;font-weight:bold;}
+.period-header{
+    background:
+    linear-gradient(
+        135deg,
+        #f1f5f9,
+        #dbeafe
+    );
+    color:#1e3a8a;
+    padding:14px;
+    border-radius:12px;
+    font-weight:600;
+    text-align:center;
+    cursor:pointer;
+    transition:.3s;
+}
+
+.period-header:hover{
+    background:
+    linear-gradient(
+        135deg,
+        #dbeafe,
+        #bfdbfe
+    );
+}
+.period-content{display:none;margin-top:12px;}
+
+button{
+    border:none;
+    border-radius:12px;
+    padding:12px;
+    cursor:pointer;
+    font-weight:600;
+    transition:.3s;
+    width:100%;
+    margin-top:12px;
+}
+button:hover{
+    transform:translateY(-2px);
+}
+button:active{
+    transform:scale(.97);
+}
+.save-btn{
+    background:
+    linear-gradient(
+        135deg,
+        #3b82f6,
+        #2563eb
+    );
+    color:white;
+}
+.main-action-btn{
+    background:
+    linear-gradient(
+        135deg,
+        #10b981,
+        #059669
+    );
+    color:white;
+    font-size:18px;
+    padding:18px;
+    border-radius:16px;
+    margin-top:22px;
+    box-shadow:
+    0 15px 30px rgba(16,185,129,.35);
+    transition:.35s;
+}
+.main-action-btn:hover{
+    transform:
+    translateY(-5px)
+    scale(1.01);
+    box-shadow:
+    0 20px 40px rgba(16,185,129,.45);
+}
+
+.hero{
+    text-align:center;
+    margin-bottom:40px;
+}
+.hero h1{
+    font-size:48px;
+    font-weight:700;
+    background:linear-gradient(
+        135deg,
+        #2563eb,
+        #7c3aed
+    );
+
+    background-clip:text;
+    -webkit-background-clip:text;
+
+    color:transparent;
+    -webkit-text-fill-color:transparent;
+
+    margin-bottom:12px;
+}
+.hero p{
+    color:#64748b;
+    font-size:18px;
+    max-width:700px;
+    margin:auto;
+    line-height:1.7;
+}
+
+.bg-circle{
+    position:fixed;
+    border-radius:50%;
+    backdrop-filter:blur(10px);
+    z-index:-1;
+    animation:float 10s ease-in-out infinite;
+}
+.circle1{
+    width:250px;
+    height:250px;
+    background:rgba(255,255,255,.08);
+    top:80px;
+    left:100px;
+}
+.circle2{
+    width:350px;
+    height:350px;
+    background:rgba(99,102,241,.15);
+    right:100px;
+    top:120px;
+}
+.circle3{
+    width:200px;
+    height:200px;
+    background:rgba(16,185,129,.15);
+    bottom:80px;
+    left:40%;
+}
+@keyframes float{
+    0%{transform:translateY(0px);}
+    50%{transform:translateY(-20px);}
+    100%{transform:translateY(0px);}
+}
+</style>
+</head>
+<body>
+<div class="bg-circle circle1"></div>
+<div class="bg-circle circle2"></div>
+<div class="bg-circle circle3"></div>
+
+<div class="container">
+    <div class="hero">
+        <h1>School Timetable Builder</h1>
+        <p>
+            Configure standards, subjects,
+            sections and generate a complete
+            timetable automatically.
+        </p>
+    </div>
+
+    <div class="table">
+        <div class="cell heading">Standards</div>
+        <div class="cell heading">Sections</div>
+        <div class="cell heading">Subjects</div>
+        <div class="cell heading">Periods</div>
+
+        <div class="cell">
+            <label>No. of Standards</label>
+            <input type="number" id="numStandards" min="1" placeholder="Enter number">
+        </div>
+
+        <div class="cell">
+            <label>Default Sections</label>
+            <input type="number" id="defaultSections" value="2" min="1">
+        </div>
+
+        <div class="cell">
+            <p style="font-weight:bold">Click a standard to edit its subjects.</p>
+        </div>
+
+        <div class="cell">
+            <label>No. of Periods / Day</label>
+            <input type="number" id="defaultPeriods" value="8" min="1">
+            <button class="save-btn" onclick="savePeriods()">Save Periods</button>
+        </div>
+
+        <div id="generatedRows" style="display:contents;"></div>
+    </div>
+    
+    <button class="save-btn main-action-btn" onclick="goToTeachers()">
+        Handle Teachers
+    </button>
+</div>
+
+<script>
+const defaultSubjects = ["Tamil", "English", "Maths", "Science", "Social"];
+const numInput = document.getElementById("numStandards");
+const defaultInput = document.getElementById("defaultSections");
+const generatedRows = document.getElementById("generatedRows");
+
+// Load data from sessionStorage on initialization
+let savedData = JSON.parse(sessionStorage.getItem("schoolData"));
+
+if(savedData)
+{
+    document.getElementById("numStandards").value = savedData.numStandards;
+    document.getElementById("defaultPeriods").value = savedData.defaultPeriods;
+    generateRows();
+    loadSavedData(savedData);
+}
+
+numInput.addEventListener("input", generateRows);
+
+defaultInput.addEventListener("input", () => {
+    document.querySelectorAll(".section-input").forEach(x => x.value = defaultInput.value);
+});
+
+document.getElementById('defaultPeriods').addEventListener('input', () => {
+    let num = parseInt(numInput.value) || 0;
+    for (let i = 1; i <= num; i++) {
+        updatePeriodNames(i);
+    }
+});
+
+function generateRows() {
+    let num = parseInt(numInput.value) || 0;
+    generatedRows.innerHTML = "";
+
+    for (let i = 1; i <= num; i++) {
+        generatedRows.innerHTML += `
+        <div class="cell standard">
+            <div class="edit-container">
+                <input type="text" class="std-input" id="stdName${i}" value="Standard ${i}" oninput="updateHeaderName(${i})">
+                <button class="edit-btn" id="editBtn${i}" onclick="enableEdit(${i})" title="Edit Name">🖉</button>
+                <button class="inline-save-btn" id="inlineSaveBtn${i}" onclick="disableEdit(${i})">Save</button>
+            </div>
+        </div>
+
+        <div class="cell">
+            <input type="number" class="section-input" id="sec${i}" value="${defaultInput.value}" min="1">
+        </div>
+
+        <div class="cell">
+            <div class="subject-header" onclick="toggleSubjects(${i})" id="header${i}">
+                ▶ Standard ${i}
+            </div>
+            <div class="subject-content" id="subjectContent${i}">
+                <label>No. of Subjects</label>
+                <input type="number" id="subCount${i}" value="5" min="1" oninput="updateSubjects(${i})">
+                
+                <div id="subjects${i}"></div>
+
+                <label style="margin-top:15px;">
+                    Subjects that occur only once a week
+                </label>
+                <input type="text" id="weeklySubjects${i}" placeholder="Example : Art, PT, Library" oninput="updatePeriodNames(${i})">
+
+                <button class="save-btn" onclick="saveSubjects(${i})">
+                    Save Subjects
+                </button>
+            </div>
+        </div>
+
+        <div class="cell">
+            <div class="period-header" onclick="togglePeriods(${i})" id="periodHeader${i}">
+                ▶ Period Distribution
+            </div>
+            <div class="period-content" id="periodContent${i}">
+                <div id="periods${i}"></div>
+                <button class="save-btn" onclick="savePeriodDistribution(${i})">
+                    Save Period Distribution
+                </button>
+            </div>
+        </div>`;
+    }
+
+    if (!savedData) {
+        for (let i = 1; i <= num; i++) {
+            updateSubjects(i);
+        }
+    }
+}
+
+function loadSavedData(savedData)
+{
+    savedData.standards.forEach((std, index) => {
+        let i = index + 1;
+
+        document.getElementById(`stdName${i}`).value = std.name;
+        document.getElementById(`sec${i}`).value = std.sections;
+        updateHeaderName(i);
+
+        let normalSubjects = [];
+        let weeklySubjects = [];
+
+        std.subjects.forEach(sub => {
+            if(sub.type === "weekly") {
+                weeklySubjects.push(sub);
+            } else {
+                normalSubjects.push(sub);
+            }
+        });
+
+        document.getElementById(`subCount${i}`).value = normalSubjects.length;
+        updateSubjects(i);
+
+        normalSubjects.forEach((sub, j) => {
+            let subInput = document.getElementById(`std${i}sub${j+1}`);
+            if (subInput) subInput.value = sub.subject;
+        });
+
+        document.getElementById(`weeklySubjects${i}`).value = weeklySubjects.map(x => x.subject).join(", ");
+        updatePeriodNames(i);
+
+        normalSubjects.forEach((sub, j) => {
+            let dropDown = document.getElementById(`period${i}_${j+1}`);
+            if (dropDown) dropDown.value = sub.periods;
+        });
+    });
+}
+
+function enableEdit(id) {
+    let input = document.getElementById(`stdName${id}`);
+    let editBtn = document.getElementById(`editBtn${id}`);
+    let saveBtn = document.getElementById(`inlineSaveBtn${id}`);
+    
+    input.classList.add('editable');
+    editBtn.style.display = 'none';
+    saveBtn.style.display = 'inline-block';
+    
+    input.focus();
+    input.select();
+}
+
+function disableEdit(id) {
+    let input = document.getElementById(`stdName${id}`);
+    let editBtn = document.getElementById(`editBtn${id}`);
+    let saveBtn = document.getElementById(`inlineSaveBtn${id}`);
+    
+    input.classList.remove('editable');
+    editBtn.style.display = 'inline-block';
+    saveBtn.style.display = 'none';
+}
+
+function updateHeaderName(id) {
+    let nameValue = document.getElementById(`stdName${id}`).value;
+    let box = document.getElementById("subjectContent" + id);
+    let head = document.getElementById("header" + id);
+    if (!head) return;
+    
+    let isExpanded = box.style.display === "block";
+    head.innerHTML = (isExpanded ? "▼ " : "▶ ") + nameValue;
+}
+
+function toggleSubjects(std) {
+    let box = document.getElementById("subjectContent" + std);
+    let head = document.getElementById("header" + std);
+    let nameValue = document.getElementById(`stdName${std}`).value;
+
+    if (box.style.display === "block") {
+        box.style.display = "none";
+        head.innerHTML = "▶ " + nameValue;
+    } else {
+        box.style.display = "block";
+        head.innerHTML = "▼ " + nameValue;
+    }
+}
+
+function togglePeriods(std) {
+    let box = document.getElementById('periodContent' + std);
+    let head = document.getElementById('periodHeader' + std);
+    if (box.style.display === 'block') {
+        box.style.display = 'none';
+        head.innerHTML = '▶ Period Distribution';
+    } else {
+        box.style.display = 'block';
+        head.innerHTML = '▼ Period Distribution';
+    }
+}
+
+function updateSubjects(std) {
+    let count = parseInt(document.getElementById("subCount" + std).value) || 0;
+    let box = document.getElementById("subjects" + std);
+
+    let currentSubValues = [];
+    for (let i = 1; i <= count; i++) {
+        let inputEl = document.getElementById(`std${std}sub${i}`);
+        if (inputEl) {
+            currentSubValues.push(inputEl.value);
+        } else {
+            currentSubValues.push(i <= defaultSubjects.length ? defaultSubjects[i - 1] : "");
+        }
+    }
+
+    let subjectsHTML = "";
+    for (let i = 1; i <= count; i++) {
+        subjectsHTML += `
+        <div class="subject-row">
+            <span>Subject ${i}</span>
+            <input type="text" id="std${std}sub${i}" value="${currentSubValues[i - 1]}" oninput="updatePeriodNames(${std})">
+        </div>`;
+    }
+    box.innerHTML = subjectsHTML;
+
+    updatePeriodNames(std);
+}
+
+function updatePeriodNames(std) {
+    let count = parseInt(document.getElementById("subCount" + std).value) || 0;
+    let periodBox = document.getElementById("periods" + std);
+    if (!periodBox) return;
+
+    let savedDropdowns = {};
+    for (let i = 1; i <= count; i++) {
+        let dropdown = document.getElementById(`period${std}_${i}`);
+        if (dropdown) savedDropdowns[`normal_${i}`] = dropdown.value;
+    }
+
+    let defaultPeriods = parseInt(document.getElementById('defaultPeriods').value) || 0;
+
+    let weeklyText = document.getElementById("weeklySubjects"+std)?.value || "";
+    let weeklySubjects = weeklyText.split(",").map(x=>x.trim()).filter(x=>x!="");
+    let weeklyCount = weeklySubjects.length;
+
+    let totalTarget = defaultPeriods * 5;
+    let remainingPeriods = totalTarget - weeklyCount;
+
+    let each = Math.floor(remainingPeriods / count);
+    let extra = remainingPeriods % count;
+
+    let weeklyOptions = "";
+    for (let i = 0; i <= 40; i++) {
+        weeklyOptions += `<option value="${i}">${i}</option>`;
+    }
+
+    let periodsHTML = "";
+    for (let i = 1; i <= count; i++) {
+        let subjectName = document.getElementById(`std${std}sub${i}`)?.value || ("Subject " + i);
+        periodsHTML += `
+        <div class="period-row">
+            <span>${subjectName}</span>
+            <select id="period${std}_${i}" style="width:90px;padding:5px;">
+                ${weeklyOptions}
+            </select>
+        </div>`;
+    }
+
+    weeklySubjects.forEach((sub, index) => {
+        periodsHTML += `
+        <div class="period-row">
+            <span>${sub}</span>
+            <input
+            type="number"
+            id="weeklyPeriod${std}_${index}"
+            value="1"
+            readonly
+            style="
+            width:90px;
+            padding:5px;
+            background:#eee;
+            text-align:center;
+            ">
+        </div>`;
+    });
+
+    periodBox.innerHTML = periodsHTML;
+
+    for(let i=1;i<=count;i++){
+        let dropdown = document.getElementById(`period${std}_${i}`);
+        if(dropdown){
+            dropdown.value = each + (i<=extra ? 1 : 0);
+        }
+    }
+}
+
+function validatePeriods(std) {
+    let defaultPeriods = parseInt(document.getElementById("defaultPeriods").value) || 0;
+    let totalAllowed = defaultPeriods * 5; 
+    let count = parseInt(document.getElementById("subCount" + std).value) || 0;
+    let totalAssigned = 0;
+
+    for (let i = 1; i <= count; i++) {
+        let el = document.getElementById(`period${std}_${i}`);
+        totalAssigned += el ? (parseInt(el.value) || 0) : 0;
+    }
+
+    let weeklyText = document.getElementById("weeklySubjects" + std)?.value || "";
+    let weeklySubjects = weeklyText.split(",").map(x => x.trim()).filter(x => x !== "");
+    weeklySubjects.forEach((sub, index) => {
+        let el = document.getElementById(`weeklyPeriod${std}_${index}`);
+        totalAssigned += el ? parseInt(el.value) : 1;
+    });
+
+    console.log("Allowed =", totalAllowed, "Assigned =", totalAssigned);
+
+    if (totalAssigned !== totalAllowed) {
+        alert("Total weekly periods assigned = " + totalAssigned + "\nAllowed weekly periods (5 Days) = " + totalAllowed + "\nPlease adjust your distribution to match perfectly.");
+        return false;
+    }
+    return true;
+}
+
+function saveSubjects(std) {
+    if (!validatePeriods(std)) return;
+    let count = parseInt(document.getElementById("subCount" + std).value);
+    let nameValue = document.getElementById(`stdName${std}`).value;
+    let subjects = [];
+
+    for (let i = 1; i <= count; i++) {
+        subjects.push(document.getElementById(`std${std}sub${i}`).value);
+    }
+
+    console.log(nameValue, subjects);
+    alert("Subjects saved for " + nameValue);
+}
+
+function savePeriodDistribution(std) {
+    if (!validatePeriods(std)) return;
+
+    let count = parseInt(document.getElementById("subCount" + std).value);
+    let periods = {};
+
+    for (let i = 1; i <= count; i++) {
+        let subject = document.getElementById(`std${std}sub${i}`).value;
+        let period = document.getElementById(`period${std}_${i}`).value;
+        periods[subject] = period;
+    }
+
+    let weeklyText = document.getElementById("weeklySubjects" + std)?.value || "";
+    let weeklySubjects = weeklyText.split(",").map(x => x.trim()).filter(x => x !== "");
+    weeklySubjects.forEach((sub, index) => {
+        let val = document.getElementById(`weeklyPeriod${std}_${index}`)?.value || 1;
+        periods[sub] = val;
+    });
+
+    console.log("Standard:", document.getElementById("stdName" + std).value, periods);
+    alert("Period distribution saved successfully!");
+}
+
+function savePeriods() {
+    let periods = document.getElementById("defaultPeriods").value;
+    console.log("Periods per day:", periods);
+    alert("Periods saved for all standards");
+}
+
+function buildSchoolDataObject(total) {
+    let schoolData = {
+        numStandards: document.getElementById("numStandards").value,
+        defaultPeriods: document.getElementById("defaultPeriods").value,
+        standards: []
+    };
+
+    for (let std = 1; std <= total; std++) {
+        let standard = {};
+        standard.name = document.getElementById(`stdName${std}`).value;
+        standard.sections = document.getElementById(`sec${std}`).value;
+        
+        let weeklyText = document.getElementById(`weeklySubjects${std}`).value;
+        standard.weeklySubjects = weeklyText.split(",").map(x => x.trim()).filter(x => x != "");
+
+        let count = parseInt(document.getElementById(`subCount${std}`).value);
+        standard.subjects = [];
+
+        for (let i = 1; i <= count; i++) {
+            standard.subjects.push({
+                subject: document.getElementById(`std${std}sub${i}`).value,
+                periods: document.getElementById(`period${std}_${i}`).value,
+                type: "regular" 
+            });
+        }
+
+        standard.weeklySubjects.forEach((sub, index) => {
+            standard.subjects.push({
+                subject: sub,
+                periods: document.getElementById(`weeklyPeriod${std}_${index}`)?.value || 1,
+                type: "weekly"
+            });
+        });
+
+        schoolData.standards.push(standard);
+    }
+    return schoolData;
+}
+
+function goToTeachers(){
+    let total = parseInt(document.getElementById("numStandards").value) || 0;
+
+    if(total === 0){
+        alert("Please create standards first.");
+        return;
+    }
+
+    for(let std = 1; std <= total; std++){
+        if(!validatePeriods(std)) return;
+    }
+
+    let schoolData = buildSchoolDataObject(total);
+    sessionStorage.setItem("schoolData", JSON.stringify(schoolData));
+    window.location.href = "teachers.html";
+}
+</script>
+</body>
+</html>
